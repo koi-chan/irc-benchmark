@@ -13,7 +13,7 @@ git リポジトリをクローンしたら、必要な rubygems をインスト
 
 ```sh
 $ bundle install --path vendor/bundle
-$ vi bin/irc-benchmark.rb
+$ vi irc-benchmark.rb
 ```
 
 ruby インタプリタを使用してプログラムを起動します。  
