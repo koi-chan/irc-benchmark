@@ -2,21 +2,23 @@
 
 require 'bundler/setup'
 require 'cinch'
-require 'pp'
 
 bot_config = {
   Host: 'vps1.kazagakure.net',
   Port: 6667,
   Password: nil,
   Encoding: 'UTF-8',
-  Nick: 'ib-%04d',
+  Nick: "#{`hostname -s`.chomp}-%04d",
   User: 'irc-bench',
   RealName: 'IRC ベンチマーク',
-  Channels: ['#cre']
+  Channels: ['#irc_test']
 }
 number = 50
+sleep_time = 600
 
-VERSION = '0.1.0'
+
+
+VERSION = '0.2.0'
 
 bots = Array.new(number) { |index| index }.map do |bot|
   bot = Cinch::Bot.new do
@@ -66,4 +68,4 @@ bots.each do |bot|
   end
 end
 
-sleep 300
+sleep(sleep_time)
