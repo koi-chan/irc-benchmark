@@ -9,14 +9,14 @@ bot_config = {
   Port: 6667,
   Password: nil,
   Encoding: 'UTF-8',
-  Nick: 'ib-',
+  Nick: 'ib-%04d',
   User: 'irc-bench',
   RealName: 'IRC ベンチマーク',
   Channels: ['#cre']
 }
-number = 10
+number = 50
 
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 bots = Array.new(number) { |index| index }.map do |bot|
   bot = Cinch::Bot.new do
@@ -26,7 +26,7 @@ bots = Array.new(number) { |index| index }.map do |bot|
       c.password = bot_config[:Password]
       # エンコーディングの既定値は UTF-8
       c.encoding = bot_config[:Encoding] || 'UTF-8'
-      c.nick = bot_config[:Nick] << bot.to_s
+      c.nick = bot_config[:Nick] % bot
       c.user = bot_config[:User]
       c.realname = bot_config[:RealName]
       # JOIN するチャンネルの既定値はなし（空の配列）
@@ -39,8 +39,10 @@ bots = Array.new(number) { |index| index }.map do |bot|
     end
   
     # 指定した数のクライアントが一斉に反応する
-    on(:message, /^.reaction (\d+)/) do |m, over|
-      m.target.send("reaction", true) if bot < over
+    on(:message, /^\.reaction (\d+)/) do |m, over|
+      if bot.nick.slice(-4, 4).to_i < over.to_i
+        m.target.send("reaction", true)
+      end
     end
 
     # 全てのクライアントが一斉に反応する
@@ -49,9 +51,19 @@ bots = Array.new(number) { |index| index }.map do |bot|
     end
 
     # 全てのクライアントが指定された秒数の間に反応する
-    on(:message, /^.rand (\d+)/) do |m, time|
-      sleep(rand(time))
+    on(:message, /^\.rand (\d+)/) do |m, time|
+      sleep(rand(time.to_i * 1000) / 1000)
       m.target.send("random wait reaction", true)
     end
   end
+
 end
+
+bots.each do |bot|
+  Thread.new do
+    bot.loggers.level = :info
+    bot.start
+  end
+end
+
+sleep 300
