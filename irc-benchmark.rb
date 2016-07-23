@@ -5,7 +5,7 @@ require 'cinch'
 
 bot_config = {
   Host: 'vps1.kazagakure.net',
-  Port: 6667,
+  Port: 6665,
   Password: nil,
   Encoding: 'UTF-8',
   Nick: "#{`hostname -s`.chomp}-%04d",
@@ -18,7 +18,7 @@ sleep_time = 600
 
 
 
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 bots = Array.new(number) { |index| index }.map do |bot|
   bot = Cinch::Bot.new do
